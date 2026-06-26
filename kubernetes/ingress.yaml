@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: quack-server
+  annotations:
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "*"
+    nginx.ingress.kubernetes.io/cors-allow-methods: "GET, POST, OPTIONS"
+    nginx.ingress.kubernetes.io/cors-allow-headers: "*"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - quack-lgaliana.lab.sspcloud.fr   # À adapter
+  rules:
+    - host: quack-lgaliana.lab.sspcloud.fr   # À adapter
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: quack-server
+                port:
+                  number: 80

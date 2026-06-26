@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: quack-server
+  labels:
+    app: quack-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: quack-server
+  template:
+    metadata:
+      labels:
+        app: quack-server
+    spec:
+      containers:
+        - name: quack
+          image: <registry>/quack-server:latest   # À remplacer
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 9494
+          env:
+            - name: QUACK_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: quack-secrets
+                  key: token
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: quack-secrets
+                  key: aws-access-key-id
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: quack-secrets
+                  key: aws-secret-access-key
+            # Décommenter si credentials temporaires (Vault / STS)
+            # - name: AWS_SESSION_TOKEN
+            #   valueFrom:
+            #     secretKeyRef:
+            #       name: quack-secrets
+            #       key: aws-session-token
+            #       optional: true
+            - name: S3_ENDPOINT
+              value: "minio.lab.sspcloud.fr"
+            - name: S3_REGION
+              value: "us-east-1"
+            - name: PARQUET_PATH
+              value: "s3://lgaliana/data/python-ENSAE/sirene2024.parquet"
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "250m"
+            limits:
+              memory: "4Gi"
+              cpu: "1000m"
+          readinessProbe:
+            tcpSocket:
+              port: 9494
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: 9494
+            initialDelaySeconds: 20
+            periodSeconds: 30
