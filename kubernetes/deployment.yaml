@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: quack
-          image: linogaliana/test-quack-server:latest   # À remplacer
+          image: linogaliana/test-quack-sspcloud:latest   # À remplacer
           imagePullPolicy: Always
           ports:
             - containerPort: 9494
