@@ -36,13 +36,12 @@ spec:
                 secretKeyRef:
                   name: quack-secrets
                   key: aws-secret-access-key
-            # Décommenter si credentials temporaires (Vault / STS)
-            # - name: AWS_SESSION_TOKEN
-            #   valueFrom:
-            #     secretKeyRef:
-            #       name: quack-secrets
-            #       key: aws-session-token
-            #       optional: true
+            - name: AWS_SESSION_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: quack-secrets
+                  key: aws-session-token
+                  optional: true
             - name: S3_ENDPOINT
               value: "minio.lab.sspcloud.fr"
             - name: S3_REGION
